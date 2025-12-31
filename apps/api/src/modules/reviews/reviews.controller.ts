@@ -72,7 +72,7 @@ export class ReviewsController {
         select: { rating: true },
       })
 
-      const totalRating = professionalReviews.reduce((sum, r) => sum + r.rating, 0)
+      const totalRating = professionalReviews.reduce((sum: number, r: any) => sum + r.rating, 0)
       const avgRating = totalRating / professionalReviews.length
 
       await prisma.professional.update({

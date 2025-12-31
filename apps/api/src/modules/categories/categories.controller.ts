@@ -56,7 +56,7 @@ export class CategoriesController {
       })
 
       // Filter top-level categories (no parent)
-      const topLevelCategories = categories.filter((c) => !c.parentId)
+      const topLevelCategories = categories.filter((c: any) => !c.parentId)
 
       return res.json({
         success: true,
