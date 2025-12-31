@@ -16,7 +16,7 @@ import notificationsRoutes from './modules/notifications/notifications.routes'
 dotenv.config()
 
 const app = express()
-const PORT = process.env.PORT || 3001
+const PORT = Number(process.env.PORT) || 3001
 
 // Rate limiting
 const limiter = rateLimit({
