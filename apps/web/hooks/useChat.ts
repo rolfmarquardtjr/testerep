@@ -83,7 +83,7 @@ export function useChat(options: UseChatOptions = {}) {
       if (!token) return
 
       const response = await fetch(
-        getApiUrl('/api/conversations/${convId}/messages`,
+        `${getApiUrl('/api/conversations')}/${convId}/messages`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -125,7 +125,7 @@ export function useChat(options: UseChatOptions = {}) {
       if (!token) throw new Error('Not authenticated')
 
       const response = await fetch(
-        getApiUrl('/api/conversations/${convId}/messages`,
+        `${getApiUrl('/api/conversations')}/${convId}/messages`,
         {
           method: 'POST',
           headers: {
@@ -159,7 +159,7 @@ export function useChat(options: UseChatOptions = {}) {
       const token = getToken()
       if (!token) return
 
-      await fetch(getApiUrl('/api/conversations/${convId}/read`, {
+      await fetch(`${getApiUrl('/api/conversations')}/${convId}/read`, {
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}` },
       })

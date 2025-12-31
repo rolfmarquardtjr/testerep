@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Button, Card, CardContent, Input } from '@/components/ui'
 import { EmptyState, LoadingSpinner } from '@/components/shared'
-import {
 import { getApiUrl } from '@/lib/api'
+import {
   Search,
   MapPin,
   Clock,
@@ -77,7 +77,7 @@ export default function OportunidadesPage() {
         setRequests(requestsData.data.requests || [])
       }
 
-      const categoriesResponse = await fetch(getApiUrl('/api/categories')
+      const categoriesResponse = await fetch(getApiUrl('/api/categories'))
       const categoriesData = await categoriesResponse.json()
       if (categoriesData.success) {
         setCategories(categoriesData.data || [])

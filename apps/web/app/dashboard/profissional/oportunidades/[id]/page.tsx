@@ -5,8 +5,8 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Button, Card, CardContent, Input, Label, Textarea } from '@/components/ui'
 import { LoadingSpinner } from '@/components/shared'
-import {
 import { getApiUrl } from '@/lib/api'
+import {
   ArrowLeft,
   MapPin,
   Calendar,
@@ -83,7 +83,7 @@ export default function OportunidadeDetalhesPage() {
   const fetchRequest = async () => {
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await fetch(getApiUrl('/api/service-requests/${params.id}`, {
+      const response = await fetch(`${getApiUrl('/api/service-requests')}/${params.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
 

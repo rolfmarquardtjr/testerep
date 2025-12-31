@@ -5,8 +5,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Button, Card, CardContent, Input } from '@/components/ui'
 import { StatusBadge, EmptyState, LoadingSpinner } from '@/components/shared'
-import {
 import { getApiUrl } from '@/lib/api'
+import {
   Search,
   MapPin,
   Calendar,

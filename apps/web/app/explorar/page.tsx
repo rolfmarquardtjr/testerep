@@ -4,8 +4,8 @@ import { useEffect, useState, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button, Input } from '@/components/ui'
-import {
 import { getApiUrl } from '@/lib/api'
+import {
   Search,
   MapPin,
   Filter,
@@ -96,7 +96,7 @@ export default function ExplorarPage() {
 
   const fetchProfessionals = async () => {
     try {
-      const response = await fetch(getApiUrl('/api/professionals')
+      const response = await fetch(getApiUrl('/api/professionals'))
       const data = await response.json()
       if (data.success) {
         setProfessionals(data.data.professionals || [])

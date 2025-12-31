@@ -7,8 +7,8 @@ import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import { Button, Card, CardContent } from '@/components/ui'
 import { LoadingSpinner, StarRating } from '@/components/shared'
-import {
 import { getApiUrl } from '@/lib/api'
+import {
   ArrowLeft,
   MapPin,
   Clock,
@@ -87,7 +87,7 @@ export default function ProfissionalPerfilPage() {
 
   const fetchProfessional = async () => {
     try {
-      const response = await fetch(getApiUrl('/api/professionals/${params.id}`)
+      const response = await fetch(`${getApiUrl('/api/professionals')}/${params.id}`)
       const data = await response.json()
       if (data.success) {
         setProfessional(data.data)

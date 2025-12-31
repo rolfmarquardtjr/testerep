@@ -5,8 +5,8 @@ import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { Button, Card, CardContent, Input } from '@/components/ui'
 import { LoadingSpinner, EmptyState } from '@/components/shared'
-import {
 import { getApiUrl } from '@/lib/api'
+import {
   Search,
   Send,
   ArrowLeft,
@@ -111,7 +111,7 @@ export default function MensagensProfissionalPage() {
     try {
       const token = localStorage.getItem('accessToken')
       const response = await fetch(
-        getApiUrl('/api/conversations/${conversationId}/messages`,
+        `${getApiUrl('/api/conversations')}/${conversationId}/messages`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -142,7 +142,7 @@ export default function MensagensProfissionalPage() {
     try {
       const token = localStorage.getItem('accessToken')
       const response = await fetch(
-        getApiUrl('/api/conversations/${selectedConversation.id}/messages`,
+        `${getApiUrl('/api/conversations')}/${selectedConversation.id}/messages`,
         {
           method: 'POST',
           headers: {

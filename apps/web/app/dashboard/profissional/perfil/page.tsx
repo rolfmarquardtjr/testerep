@@ -5,8 +5,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Button, Card, CardContent, Input, Label, Textarea } from '@/components/ui'
 import { LoadingSpinner, StarRating } from '@/components/shared'
-import {
 import { getApiUrl } from '@/lib/api'
+import {
   User,
   Mail,
   Phone,
@@ -132,7 +132,7 @@ export default function PerfilProfissionalPage() {
         setPortfolioItems(profileData.data.portfolio || [])
       }
 
-      const categoriesResponse = await fetch(getApiUrl('/api/categories')
+      const categoriesResponse = await fetch(getApiUrl('/api/categories'))
       const categoriesData = await categoriesResponse.json()
       if (categoriesData.success) {
         setAllCategories(categoriesData.data || [])
@@ -283,7 +283,7 @@ export default function PerfilProfissionalPage() {
   const handleRemovePortfolioItem = async (itemId: string) => {
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await fetch(getApiUrl('/api/professionals/me/portfolio/${itemId}`, {
+      const response = await fetch(`${getApiUrl('/api/professionals/me/portfolio')}/${itemId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       })
