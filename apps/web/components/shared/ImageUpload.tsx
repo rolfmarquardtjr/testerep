@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { Upload, X, Image as ImageIcon } from 'lucide-react'
 import { useCallback, useState } from 'react'

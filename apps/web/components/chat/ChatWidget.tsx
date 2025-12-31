@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Button, Card, CardContent, Input } from '@/components/ui'
 import { LoadingSpinner } from '@/components/shared'
 import { useChat } from '@/hooks/useChat'
+import Image from 'next/image'
 import {
   MessageSquare,
   X,

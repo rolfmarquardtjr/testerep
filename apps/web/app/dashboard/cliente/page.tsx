@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button } from '@/components/ui'
 import { LoadingSpinner } from '@/components/shared'
 import {
@@ -262,9 +263,11 @@ export default function ClienteDashboard() {
                 </Button>
               </div>
             </div>
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600"
               alt="Profissional"
+              width={600}
+              height={400}
               className="absolute right-0 top-0 h-full w-1/2 object-cover opacity-30"
             />
           </div>
@@ -284,9 +287,10 @@ export default function ClienteDashboard() {
                   href={`/explorar?categoria=${cat.id}`}
                   className="group relative overflow-hidden rounded-2xl aspect-square"
                 >
-                  <img
+                  <Image
                     src={cat.image}
                     alt={cat.name}
+                    fill
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
@@ -413,9 +417,10 @@ export default function ClienteDashboard() {
                     >
                       {/* Cover Image with Gradient Overlay */}
                       <div className="relative h-36 overflow-hidden">
-                        <img
+                        <Image
                           src={pro.coverImage}
                           alt={pro.category}
+                          fill
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
@@ -454,9 +459,11 @@ export default function ClienteDashboard() {
                         {/* Avatar positioned above */}
                         <div className="absolute -top-8 left-4">
                           <div className="w-16 h-16 rounded-xl overflow-hidden border-4 border-white shadow-xl">
-                            <img
+                            <Image
                               src={pro.image}
                               alt={pro.name}
+                              width={64}
+                              height={64}
                               className="w-full h-full object-cover"
                             />
                           </div>
@@ -602,9 +609,10 @@ export default function ClienteDashboard() {
         <div className="relative">
           {/* Background Image */}
           <div className="absolute inset-0 h-64">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800&h=600&fit=crop"
               alt=""
+              fill
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-b from-navy-900/80 via-navy-900/70 to-gray-50" />
@@ -677,9 +685,11 @@ export default function ClienteDashboard() {
         {/* CTA Banner - More Visual */}
         <div className="px-5 mb-5">
           <div className="relative overflow-hidden rounded-2xl">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&h=300&fit=crop"
               alt=""
+              width={600}
+              height={300}
               className="w-full h-36 object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-navy-900/95 via-navy-900/80 to-transparent" />
@@ -716,9 +726,10 @@ export default function ClienteDashboard() {
                 href={`/explorar?categoria=${cat.id}`}
                 className="flex-shrink-0 relative w-28 h-32 rounded-2xl overflow-hidden group shadow-md"
               >
-                <img
+                <Image
                   src={cat.image}
                   alt={cat.name}
+                  fill
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-navy-900/60 to-transparent" />
@@ -746,9 +757,10 @@ export default function ClienteDashboard() {
           {requests.length === 0 ? (
             <div className="relative bg-white rounded-2xl border border-gray-100 overflow-hidden">
               <div className="absolute inset-0 opacity-10">
-                <img
+                <Image
                   src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600"
                   alt=""
+                  fill
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -840,9 +852,10 @@ export default function ClienteDashboard() {
               >
                 {/* Cover Image */}
                 <div className="h-24 overflow-hidden relative">
-                  <img
+                  <Image
                     src={pro.coverImage}
                     alt={pro.category}
+                    fill
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-navy-900/70 via-navy-900/30 to-transparent" />
@@ -872,9 +885,11 @@ export default function ClienteDashboard() {
                 <div className="p-4 -mt-8 relative">
                   <div className="flex items-end gap-2 mb-3">
                     <div className="w-14 h-14 rounded-xl overflow-hidden border-4 border-white shadow-lg">
-                      <img
+                      <Image
                         src={pro.image}
                         alt={pro.name}
+                        width={56}
+                        height={56}
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -914,9 +929,11 @@ export default function ClienteDashboard() {
         {/* Promo Banner - Improved */}
         <div className="px-5 mb-6">
           <div className="relative overflow-hidden rounded-2xl shadow-lg">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=600&h=300&fit=crop"
               alt="Promocao"
+              width={600}
+              height={300}
               className="w-full h-36 object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-navy-900/95 via-navy-900/80 to-transparent" />

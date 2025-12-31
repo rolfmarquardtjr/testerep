@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button, Card, CardContent, Textarea } from '@/components/ui'
 import { LoadingSpinner } from '@/components/shared'
 import {

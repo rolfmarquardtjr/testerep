@@ -1,7 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
 import dynamic from 'next/dynamic'
+
+import { LoadingSpinner } from '@/components/shared'
 
 // Dynamic imports for Leaflet components (they need window)
 const MapContainer = dynamic(
@@ -20,12 +23,6 @@ const Popup = dynamic(
   () => import('react-leaflet').then((mod) => mod.Popup),
   { ssr: false }
 )
-const useMap = dynamic(
-  () => import('react-leaflet').then((mod) => mod.useMap),
-  { ssr: false }
-) as any
-
-import { LoadingSpinner } from '@/components/shared'
 
 interface MapProps {
   center?: [number, number]
@@ -44,20 +41,7 @@ export interface MapMarker {
   subtitle?: string
   rating?: number
   image?: string
-  data?: any
-}
-
-// Component to update map center
-function MapUpdater({ center }: { center: [number, number] }) {
-  const map = useMap()
-
-  useEffect(() => {
-    if (center && map) {
-      map.setView(center, map.getZoom())
-    }
-  }, [center, map])
-
-  return null
+  data?: unknown
 }
 
 export default function Map({

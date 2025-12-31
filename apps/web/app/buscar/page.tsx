@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Button, Card, CardContent, Input } from '@/components/ui'
 import { LoadingSpinner, StarRating } from '@/components/shared'
 import {
@@ -332,9 +333,11 @@ export default function BuscarPage() {
                   <div className="text-center mb-4">
                     <div className="w-20 h-20 rounded-full bg-mustard-500 flex items-center justify-center text-navy-900 font-bold text-2xl mx-auto mb-3">
                       {pro.user.avatar ? (
-                        <img
+                        <Image
                           src={pro.user.avatar}
                           alt={pro.user.name}
+                          width={80}
+                          height={80}
                           className="w-full h-full rounded-full object-cover"
                         />
                       ) : (
@@ -405,9 +408,11 @@ export default function BuscarPage() {
                     <div className="flex items-start gap-4 flex-1">
                       <div className="w-16 h-16 rounded-full bg-mustard-500 flex items-center justify-center text-navy-900 font-bold text-xl flex-shrink-0">
                         {pro.user.avatar ? (
-                          <img
+                          <Image
                             src={pro.user.avatar}
                             alt={pro.user.name}
+                            width={64}
+                            height={64}
                             className="w-full h-full rounded-full object-cover"
                           />
                         ) : (
