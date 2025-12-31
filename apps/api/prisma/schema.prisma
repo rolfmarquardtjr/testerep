@@ -1,0 +1,439 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CLIENT
+  PROFESSIONAL
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  PENDING_VERIFICATION
+}
+
+enum PricingType {
+  PER_HOUR
+  PER_SERVICE
+  CUSTOM_QUOTE
+}
+
+enum ServiceRequestStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum QuoteStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  EXPIRED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum NotificationType {
+  NEW_QUOTE
+  QUOTE_ACCEPTED
+  SERVICE_STARTED
+  SERVICE_COMPLETED
+  NEW_MESSAGE
+  NEW_REVIEW
+  PAYMENT_RECEIVED
+}
+
+// User & Auth Models
+model User {
+  id            String     @id @default(uuid())
+  email         String     @unique
+  password      String
+  name          String
+  phone         String?
+  avatar        String?
+  role          UserRole   @default(CLIENT)
+  status        UserStatus @default(ACTIVE)
+  emailVerified Boolean    @default(false)
+  phoneVerified Boolean    @default(false)
+  twoFactorEnabled Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  professional      Professional?
+  client            Client?
+  sessions          Session[]
+  notifications     Notification[]
+  sentMessages      Message[]       @relation("SentMessages")
+  reviews           Review[]        @relation("ReviewAuthor")
+  receivedReviews   Review[]        @relation("ReviewTarget")
+
+  @@index([email])
+  @@index([role, status])
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  refreshToken String   @unique
+  expiresAt    DateTime
+  ipAddress    String?
+  userAgent    String?
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([refreshToken])
+}
+
+model Client {
+  id     String @id @default(uuid())
+  userId String @unique
+
+  // Client specific fields
+  cpf           String?  @unique
+  address       String?
+  city          String?
+  state         String?
+  zipCode       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  serviceRequests ServiceRequest[]
+
+  @@index([userId])
+}
+
+model Professional {
+  id               String      @id @default(uuid())
+  userId           String      @unique
+  bio              String?
+  pricingType      PricingType @default(CUSTOM_QUOTE)
+  hourlyRate       Decimal?    @db.Decimal(10, 2)
+  serviceRadius    Int?        // In kilometers
+  verified         Boolean     @default(false)
+  rating           Decimal     @default(0) @db.Decimal(3, 2)
+  totalReviews     Int         @default(0)
+  completedJobs    Int         @default(0)
+  responseTime     Int?        // Average response time in minutes
+
+  // Location
+  latitude  Decimal? @db.Decimal(10, 8)
+  longitude Decimal? @db.Decimal(11, 8)
+  address   String?
+  city      String?
+  state     String?
+  zipCode   String?
+
+  // Documents
+  cpf               String?  @unique
+  documentsVerified Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user                User                         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  services            ServiceOffered[]
+  portfolio           PortfolioItem[]
+  certifications      Certification[]
+  availability        Availability[]
+  quotes              Quote[]
+  assignedRequests    ServiceRequest[]
+
+  @@index([userId])
+  @@index([verified, rating])
+  @@index([city, state])
+}
+
+// Service & Category Models
+model ServiceCategory {
+  id          String  @id @default(uuid())
+  name        String
+  slug        String  @unique
+  description String?
+  icon        String?
+  parentId    String?
+  order       Int     @default(0)
+  active      Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  parent            ServiceCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  subcategories     ServiceCategory[] @relation("CategoryHierarchy")
+  servicesOffered   ServiceOffered[]
+  serviceRequests   ServiceRequest[]
+
+  @@index([slug])
+  @@index([parentId])
+}
+
+model ServiceOffered {
+  id             String @id @default(uuid())
+  professionalId String
+  categoryId     String
+  title          String
+  description    String
+  price          Decimal? @db.Decimal(10, 2)
+  active         Boolean  @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  professional Professional    @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  category     ServiceCategory @relation(fields: [categoryId], references: [id])
+
+  @@index([professionalId])
+  @@index([categoryId])
+  @@index([active])
+}
+
+model ServiceRequest {
+  id          String               @id @default(uuid())
+  clientId    String
+  categoryId  String
+  professionalId String?
+  title       String
+  description String
+  status      ServiceRequestStatus @default(PENDING)
+
+  // Location
+  address    String?
+  city       String
+  state      String
+  zipCode    String?
+  latitude   Decimal? @db.Decimal(10, 8)
+  longitude  Decimal? @db.Decimal(11, 8)
+
+  // Scheduling
+  preferredDate DateTime?
+
+  // Pricing
+  budget Decimal? @db.Decimal(10, 2)
+  finalPrice Decimal? @db.Decimal(10, 2)
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  startedAt  DateTime?
+  completedAt DateTime?
+
+  client       Client           @relation(fields: [clientId], references: [id])
+  category     ServiceCategory  @relation(fields: [categoryId], references: [id])
+  professional Professional?    @relation(fields: [professionalId], references: [id])
+  quotes       Quote[]
+  attachments  RequestAttachment[]
+  payment      Payment?
+  review       Review?
+
+  @@index([clientId])
+  @@index([professionalId])
+  @@index([categoryId])
+  @@index([status])
+  @@index([city, state])
+}
+
+model Quote {
+  id               String      @id @default(uuid())
+  serviceRequestId String
+  professionalId   String
+  message          String
+  price            Decimal     @db.Decimal(10, 2)
+  estimatedDuration String?    // e.g., "2 hours", "3 days"
+  status           QuoteStatus @default(PENDING)
+  validUntil       DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  serviceRequest ServiceRequest @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+  professional   Professional   @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+
+  @@index([serviceRequestId])
+  @@index([professionalId])
+  @@index([status])
+}
+
+model RequestAttachment {
+  id               String @id @default(uuid())
+  serviceRequestId String
+  filename         String
+  url              String
+  mimeType         String
+  size             Int
+
+  createdAt DateTime @default(now())
+
+  serviceRequest ServiceRequest @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+
+  @@index([serviceRequestId])
+}
+
+// Professional Portfolio & Certifications
+model PortfolioItem {
+  id             String  @id @default(uuid())
+  professionalId String
+  title          String
+  description    String?
+  imageUrl       String
+  order          Int     @default(0)
+
+  createdAt DateTime @default(now())
+
+  professional Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+
+  @@index([professionalId])
+}
+
+model Certification {
+  id             String   @id @default(uuid())
+  professionalId String
+  title          String
+  issuer         String
+  issueDate      DateTime
+  expiryDate     DateTime?
+  certificateUrl String?
+  verified       Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+
+  professional Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+
+  @@index([professionalId])
+}
+
+model Availability {
+  id             String  @id @default(uuid())
+  professionalId String
+  dayOfWeek      Int     // 0-6 (Sunday to Saturday)
+  startTime      String  // HH:mm format
+  endTime        String  // HH:mm format
+
+  professional Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+
+  @@unique([professionalId, dayOfWeek, startTime, endTime])
+  @@index([professionalId])
+}
+
+// Payment & Transaction Models
+model Payment {
+  id               String        @id @default(uuid())
+  serviceRequestId String        @unique
+  amount           Decimal       @db.Decimal(10, 2)
+  platformFee      Decimal       @db.Decimal(10, 2)
+  professionalAmount Decimal     @db.Decimal(10, 2)
+  status           PaymentStatus @default(PENDING)
+  paymentMethod    String?
+  transactionId    String?       @unique
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  paidAt     DateTime?
+  releasedAt DateTime?
+
+  serviceRequest ServiceRequest @relation(fields: [serviceRequestId], references: [id])
+
+  @@index([status])
+  @@index([transactionId])
+}
+
+// Review & Rating Models
+model Review {
+  id               String  @id @default(uuid())
+  serviceRequestId String  @unique
+  authorId         String
+  targetId         String
+  rating           Int     // 1-5
+  comment          String?
+  verified         Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  serviceRequest ServiceRequest @relation(fields: [serviceRequestId], references: [id])
+  author         User           @relation("ReviewAuthor", fields: [authorId], references: [id])
+  target         User           @relation("ReviewTarget", fields: [targetId], references: [id])
+
+  @@index([targetId, rating])
+  @@index([authorId])
+}
+
+// Communication Models
+model Conversation {
+  id           String   @id @default(uuid())
+  lastMessageAt DateTime @default(now())
+
+  createdAt DateTime @default(now())
+
+  participants ConversationParticipant[]
+  messages     Message[]
+
+  @@index([lastMessageAt])
+}
+
+model ConversationParticipant {
+  id             String   @id @default(uuid())
+  conversationId String
+  userId         String
+  lastReadAt     DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
+  @@index([userId])
+}
+
+model Message {
+  id             String  @id @default(uuid())
+  conversationId String
+  senderId       String
+  content        String
+  read           Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation("SentMessages", fields: [senderId], references: [id])
+
+  @@index([conversationId])
+  @@index([senderId])
+}
+
+// Notification Model
+model Notification {
+  id      String           @id @default(uuid())
+  userId  String
+  type    NotificationType
+  title   String
+  message String
+  data    Json?
+  read    Boolean          @default(false)
+
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
+  @@index([createdAt])
+}
