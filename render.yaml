@@ -6,6 +6,7 @@ services:
     rootDir: apps/api
     buildCommand: npm run build
     startCommand: npm run start
+    installCommand: npm install --legacy-peer-deps
     envVars:
       - key: NODE_ENV
         value: production
