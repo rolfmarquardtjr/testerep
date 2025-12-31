@@ -6,6 +6,7 @@ const router = Router()
 const professionalsController = new ProfessionalsController()
 
 // Public routes
+router.get('/', (req, res) => professionalsController.searchProfessionals(req, res))
 router.get('/search', (req, res) => professionalsController.searchProfessionals(req, res))
 router.get('/:id', (req, res) => professionalsController.getProfessionalById(req, res))
 
