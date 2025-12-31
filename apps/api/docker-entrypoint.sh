@@ -1,11 +1,9 @@
 #!/bin/sh
 set -e
 
-echo "🔄 Running Prisma migrations..."
-npx prisma migrate deploy
+echo "🚀 Starting Repfy API..."
+echo "Environment: ${NODE_ENV}"
+echo "Port: ${PORT}"
 
-echo "🌱 Running database seed..."
-npx prisma db seed || echo "⚠️  Seed failed or already applied"
-
-echo "🚀 Starting server..."
+# Start the server directly
 exec "$@"
