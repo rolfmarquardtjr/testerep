@@ -1,37 +1,42 @@
 # Build stage
 FROM node:20-alpine AS builder
 
+# Install OpenSSL for Prisma
+RUN apk add --no-cache openssl
+
 WORKDIR /app
 
-# Copy root dependency files
-COPY .npmrc package*.json ./
+# Copy from root (context is already root)
+COPY . .
 
-# Copy monorepo structure
-COPY apps ./apps
-COPY packages ./packages
-
-# Install all dependencies
+# Install all dependencies from root
 RUN npm install --legacy-peer-deps
 
-# Build backend
+# Move to backend and build
 WORKDIR /app/apps/api
+
+# Generate Prisma client (schema is in ./prisma/)
+RUN npx prisma generate
+
+# Build TypeScript
 RUN npm run build
 
 # Production stage
 FROM node:20-alpine
 
+# Install OpenSSL and dumb-init
+RUN apk add --no-cache openssl dumb-init
+
 WORKDIR /app
 
-# Install dumb-init for proper signal handling
-RUN apk add --no-cache dumb-init
-
-# Copy built application
+# Copy built files from builder
 COPY --from=builder /app/apps/api/dist ./dist
 COPY --from=builder /app/apps/api/prisma ./prisma
 COPY --from=builder /app/apps/api/node_modules ./node_modules
-COPY --from=builder /app/apps/api/package.json ./
+COPY --from=builder /app/apps/api/package.json ./package.json
 
-# Copy Prisma client from node_modules if it exists
+# Copy Prisma client
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
 EXPOSE 3001
