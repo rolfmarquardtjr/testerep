@@ -6,11 +6,14 @@ WORKDIR /app
 # Copy root dependency files (from parent directory since Dockerfile is in apps/api)
 COPY ../.. .
 
-# Install all dependencies
-RUN npm install --legacy-peer-deps
+# Install all dependencies from root (handles monorepo workspaces)
+RUN npm install --legacy-peer-deps --workspaces
+
+# Generate Prisma client
+WORKDIR /app/apps/api
+RUN npx prisma generate
 
 # Build backend
-WORKDIR /app/apps/api
 RUN npm run build
 
 # Production stage
