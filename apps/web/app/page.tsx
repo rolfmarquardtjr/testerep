@@ -1494,7 +1494,7 @@ export default function HomePage() {
                 <li><Link href="/register?tipo=profissional" className="hover:text-white transition-colors">Cadastre-se</Link></li>
                 <li><Link href="/para-profissionais" className="hover:text-white transition-colors">Como Funciona</Link></li>
                 <li><Link href="/precos" className="hover:text-white transition-colors">Planos e Precos</Link></li>
-                <li><Link href="/sucesso" className="hover:text-white transition-colors">Casos de Sucesso</Link></li>
+                <li><Link href="/ajuda" className="hover:text-white transition-colors">Ajuda</Link></li>
               </ul>
             </div>
 
