@@ -15,8 +15,8 @@ RUN npm install --legacy-peer-deps
 # Move to backend and build
 WORKDIR /app/apps/api
 
-# Generate Prisma client (schema is in ./prisma/)
-RUN npx prisma generate
+# Generate Prisma client with explicit schema path
+RUN npx prisma generate --schema=./prisma/schema.prisma
 
 # Build TypeScript
 RUN npm run build
