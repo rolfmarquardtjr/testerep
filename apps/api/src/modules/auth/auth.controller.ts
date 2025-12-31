@@ -28,6 +28,15 @@ const refreshTokenSchema = z.object({
   refreshToken: z.string(),
 })
 
+const forgotPasswordSchema = z.object({
+  email: z.string().email(),
+})
+
+const resetPasswordSchema = z.object({
+  token: z.string(),
+  password: z.string().min(8),
+})
+
 export class AuthController {
   async register(req: Request, res: Response) {
     try {
@@ -298,6 +307,138 @@ export class AuthController {
       })
     } catch (error) {
       console.error('Logout error:', error)
+      return res.status(500).json({
+        success: false,
+        error: 'Internal server error',
+      })
+    }
+  }
+
+  async forgotPassword(req: Request, res: Response) {
+    try {
+      const validation = forgotPasswordSchema.safeParse(req.body)
+
+      if (!validation.success) {
+        return res.status(400).json({
+          success: false,
+          error: 'Validation failed',
+          details: validation.error.errors,
+        })
+      }
+
+      const { email } = validation.data
+
+      // Find user
+      const user = await prisma.user.findUnique({
+        where: { email },
+      })
+
+      // Always return success to prevent email enumeration
+      if (!user) {
+        return res.json({
+          success: true,
+          message: 'If the email exists, a password reset link has been sent',
+        })
+      }
+
+      // Generate reset token (valid for 1 hour)
+      const resetToken = generateAccessToken(
+        {
+          userId: user.id,
+          email: user.email,
+          role: user.role,
+        },
+        '1h'
+      )
+
+      // TODO: Send email with reset link
+      // For now, we'll just log it (in production, integrate with email service)
+      console.log(`Password reset token for ${email}: ${resetToken}`)
+      console.log(`Reset link: ${process.env.FRONTEND_URL}/redefinir-senha?token=${resetToken}`)
+
+      return res.json({
+        success: true,
+        message: 'If the email exists, a password reset link has been sent',
+        // TODO: Remove this in production - only for testing
+        ...(process.env.NODE_ENV === 'development' && { resetToken }),
+      })
+    } catch (error) {
+      console.error('Forgot password error:', error)
+      return res.status(500).json({
+        success: false,
+        error: 'Internal server error',
+      })
+    }
+  }
+
+  async resetPassword(req: Request, res: Response) {
+    try {
+      const validation = resetPasswordSchema.safeParse(req.body)
+
+      if (!validation.success) {
+        return res.status(400).json({
+          success: false,
+          error: 'Validation failed',
+          details: validation.error.errors,
+        })
+      }
+
+      const { token, password } = validation.data
+
+      // Validate password strength
+      const passwordValidation = validatePasswordStrength(password)
+      if (!passwordValidation.valid) {
+        return res.status(400).json({
+          success: false,
+          error: 'Password does not meet requirements',
+          details: passwordValidation.errors,
+        })
+      }
+
+      // Verify token
+      let payload
+      try {
+        const jwt = await import('jsonwebtoken')
+        payload = jwt.verify(token, process.env.JWT_SECRET!) as any
+      } catch (error) {
+        return res.status(401).json({
+          success: false,
+          error: 'Invalid or expired reset token',
+        })
+      }
+
+      // Find user
+      const user = await prisma.user.findUnique({
+        where: { id: payload.userId },
+      })
+
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          error: 'User not found',
+        })
+      }
+
+      // Hash new password
+      const hashedPassword = await hashPassword(password)
+
+      // Update password
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { password: hashedPassword },
+      })
+
+      // Invalidate all sessions
+      await prisma.session.deleteMany({
+        where: { userId: user.id },
+      })
+
+      return res.json({
+        success: true,
+        message: 'Password reset successfully',
+      })
+    } catch (error) {
+      console.error('Reset password error:', error)
       return res.status(500).json({
         success: false,
         error: 'Internal server error',

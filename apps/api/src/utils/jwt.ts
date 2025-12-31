@@ -11,9 +11,9 @@ export interface TokenPayload {
   role: string
 }
 
-export function generateAccessToken(payload: TokenPayload): string {
+export function generateAccessToken(payload: TokenPayload, expiresIn?: string): string {
   return jwt.sign(payload, JWT_SECRET, {
-    expiresIn: JWT_EXPIRES_IN,
+    expiresIn: expiresIn || JWT_EXPIRES_IN,
   } as jwt.SignOptions)
 }
 
