@@ -16,7 +16,6 @@ RUN npm install --legacy-peer-deps
 COPY prisma ./prisma
 COPY src ./src
 COPY tsconfig.json ./
-COPY docker-entrypoint.sh ./
 
 # Generate Prisma client
 RUN npx prisma generate
@@ -27,8 +26,8 @@ RUN npm run build
 # Production stage
 FROM node:20-alpine
 
-# Install OpenSSL and dumb-init
-RUN apk add --no-cache openssl dumb-init
+# Install OpenSSL
+RUN apk add --no-cache openssl
 
 WORKDIR /app
 
@@ -37,12 +36,7 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/docker-entrypoint.sh ./docker-entrypoint.sh
-
-# Make entrypoint executable
-RUN chmod +x ./docker-entrypoint.sh
 
 EXPOSE 3001
 
-ENTRYPOINT ["/usr/sbin/dumb-init", "--", "./docker-entrypoint.sh"]
 CMD ["node", "dist/index.js"]
