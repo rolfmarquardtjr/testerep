@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Button, Input } from '@/components/ui'
 import {
+import { getApiUrl } from '@/lib/api'
   Search,
   MapPin,
   Filter,
@@ -95,7 +96,7 @@ export default function ExplorarPage() {
 
   const fetchProfessionals = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/professionals')
+      const response = await fetch(getApiUrl('/api/professionals')
       const data = await response.json()
       if (data.success) {
         setProfessionals(data.data.professionals || [])

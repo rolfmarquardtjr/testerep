@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui'
 import { StatusBadge, EmptyState, LoadingSpinner } from '@/components/shared'
 import {
+import { getApiUrl } from '@/lib/api'
   FileText,
   DollarSign,
   Star,
@@ -87,7 +88,7 @@ export default function ProfissionalDashboard() {
     try {
       const token = localStorage.getItem('accessToken')
 
-      const requestsResponse = await fetch('http://localhost:3001/api/service-requests/available', {
+      const requestsResponse = await fetch(getApiUrl('/api/service-requests/available'), {
         headers: { Authorization: `Bearer ${token}` },
       })
       const requestsData = await requestsResponse.json()
@@ -95,7 +96,7 @@ export default function ProfissionalDashboard() {
         setRequests(requestsData.data.requests || [])
       }
 
-      const jobsResponse = await fetch('http://localhost:3001/api/service-requests/my-jobs', {
+      const jobsResponse = await fetch(getApiUrl('/api/service-requests/my-jobs'), {
         headers: { Authorization: `Bearer ${token}` },
       })
       const jobsData = await jobsResponse.json()
@@ -103,7 +104,7 @@ export default function ProfissionalDashboard() {
         setMyJobs(jobsData.data.requests || [])
       }
 
-      const statsResponse = await fetch('http://localhost:3001/api/professionals/me/stats', {
+      const statsResponse = await fetch(getApiUrl('/api/professionals/me/stats'), {
         headers: { Authorization: `Bearer ${token}` },
       })
       const statsData = await statsResponse.json()

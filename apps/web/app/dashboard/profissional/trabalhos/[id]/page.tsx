@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { Button, Card, CardContent, Textarea } from '@/components/ui'
 import { LoadingSpinner } from '@/components/shared'
 import {
+import { getApiUrl } from '@/lib/api'
   ArrowLeft,
   MapPin,
   Calendar,
@@ -86,7 +87,7 @@ export default function TrabalhoDetalhesPage() {
   const fetchJob = async () => {
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await fetch(`http://localhost:3001/api/service-requests/${params.id}`, {
+      const response = await fetch(getApiUrl('/api/service-requests/${params.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
 
@@ -105,7 +106,7 @@ export default function TrabalhoDetalhesPage() {
     setUpdating(true)
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await fetch(`http://localhost:3001/api/service-requests/${params.id}/start`, {
+      const response = await fetch(getApiUrl('/api/service-requests/${params.id}/start`, {
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -125,7 +126,7 @@ export default function TrabalhoDetalhesPage() {
     setUpdating(true)
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await fetch(`http://localhost:3001/api/service-requests/${params.id}/complete`, {
+      const response = await fetch(getApiUrl('/api/service-requests/${params.id}/complete`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

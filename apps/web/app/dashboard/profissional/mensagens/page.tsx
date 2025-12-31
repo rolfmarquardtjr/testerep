@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Button, Card, CardContent, Input } from '@/components/ui'
 import { LoadingSpinner, EmptyState } from '@/components/shared'
 import {
+import { getApiUrl } from '@/lib/api'
   Search,
   Send,
   ArrowLeft,
@@ -90,7 +91,7 @@ export default function MensagensProfissionalPage() {
   const fetchConversations = async () => {
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await fetch('http://localhost:3001/api/conversations', {
+      const response = await fetch(getApiUrl('/api/conversations'), {
         headers: { Authorization: `Bearer ${token}` },
       })
 
@@ -110,7 +111,7 @@ export default function MensagensProfissionalPage() {
     try {
       const token = localStorage.getItem('accessToken')
       const response = await fetch(
-        `http://localhost:3001/api/conversations/${conversationId}/messages`,
+        getApiUrl('/api/conversations/${conversationId}/messages`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -141,7 +142,7 @@ export default function MensagensProfissionalPage() {
     try {
       const token = localStorage.getItem('accessToken')
       const response = await fetch(
-        `http://localhost:3001/api/conversations/${selectedConversation.id}/messages`,
+        getApiUrl('/api/conversations/${selectedConversation.id}/messages`,
         {
           method: 'POST',
           headers: {

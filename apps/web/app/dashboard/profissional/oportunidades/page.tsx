@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Button, Card, CardContent, Input } from '@/components/ui'
 import { EmptyState, LoadingSpinner } from '@/components/shared'
 import {
+import { getApiUrl } from '@/lib/api'
   Search,
   MapPin,
   Clock,
@@ -68,7 +69,7 @@ export default function OportunidadesPage() {
     try {
       const token = localStorage.getItem('accessToken')
 
-      const requestsResponse = await fetch('http://localhost:3001/api/service-requests/available', {
+      const requestsResponse = await fetch(getApiUrl('/api/service-requests/available'), {
         headers: { Authorization: `Bearer ${token}` },
       })
       const requestsData = await requestsResponse.json()
@@ -76,7 +77,7 @@ export default function OportunidadesPage() {
         setRequests(requestsData.data.requests || [])
       }
 
-      const categoriesResponse = await fetch('http://localhost:3001/api/categories')
+      const categoriesResponse = await fetch(getApiUrl('/api/categories')
       const categoriesData = await categoriesResponse.json()
       if (categoriesData.success) {
         setCategories(categoriesData.data || [])

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { getApiUrl } from '@/lib/api'
 
 export interface Message {
   id: string
@@ -59,7 +60,7 @@ export function useChat(options: UseChatOptions = {}) {
       const token = getToken()
       if (!token) return
 
-      const response = await fetch('http://localhost:3001/api/conversations', {
+      const response = await fetch(getApiUrl('/api/conversations'), {
         headers: { Authorization: `Bearer ${token}` },
       })
 
@@ -82,7 +83,7 @@ export function useChat(options: UseChatOptions = {}) {
       if (!token) return
 
       const response = await fetch(
-        `http://localhost:3001/api/conversations/${convId}/messages`,
+        getApiUrl('/api/conversations/${convId}/messages`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -124,7 +125,7 @@ export function useChat(options: UseChatOptions = {}) {
       if (!token) throw new Error('Not authenticated')
 
       const response = await fetch(
-        `http://localhost:3001/api/conversations/${convId}/messages`,
+        getApiUrl('/api/conversations/${convId}/messages`,
         {
           method: 'POST',
           headers: {
@@ -158,7 +159,7 @@ export function useChat(options: UseChatOptions = {}) {
       const token = getToken()
       if (!token) return
 
-      await fetch(`http://localhost:3001/api/conversations/${convId}/read`, {
+      await fetch(getApiUrl('/api/conversations/${convId}/read`, {
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -180,7 +181,7 @@ export function useChat(options: UseChatOptions = {}) {
       const token = getToken()
       if (!token) throw new Error('Not authenticated')
 
-      const response = await fetch('http://localhost:3001/api/conversations', {
+      const response = await fetch(getApiUrl('/api/conversations'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { Button, Card, CardContent, Input, Label, Textarea } from '@/components/ui'
 import { LoadingSpinner, StarRating } from '@/components/shared'
 import {
+import { getApiUrl } from '@/lib/api'
   User,
   Mail,
   Phone,
@@ -113,7 +114,7 @@ export default function PerfilProfissionalPage() {
     try {
       const token = localStorage.getItem('accessToken')
 
-      const profileResponse = await fetch('http://localhost:3001/api/professionals/me', {
+      const profileResponse = await fetch(getApiUrl('/api/professionals/me'), {
         headers: { Authorization: `Bearer ${token}` },
       })
       const profileData = await profileResponse.json()
@@ -131,7 +132,7 @@ export default function PerfilProfissionalPage() {
         setPortfolioItems(profileData.data.portfolio || [])
       }
 
-      const categoriesResponse = await fetch('http://localhost:3001/api/categories')
+      const categoriesResponse = await fetch(getApiUrl('/api/categories')
       const categoriesData = await categoriesResponse.json()
       if (categoriesData.success) {
         setAllCategories(categoriesData.data || [])
@@ -181,7 +182,7 @@ export default function PerfilProfissionalPage() {
         const formDataUpload = new FormData()
         formDataUpload.append('file', avatarFile)
 
-        const uploadResponse = await fetch('http://localhost:3001/api/upload', {
+        const uploadResponse = await fetch(getApiUrl('/api/upload'), {
           method: 'POST',
           headers: { Authorization: `Bearer ${token}` },
           body: formDataUpload,
@@ -193,7 +194,7 @@ export default function PerfilProfissionalPage() {
         }
       }
 
-      const response = await fetch('http://localhost:3001/api/professionals/me', {
+      const response = await fetch(getApiUrl('/api/professionals/me'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -237,7 +238,7 @@ export default function PerfilProfissionalPage() {
       const formDataUpload = new FormData()
       formDataUpload.append('file', portfolioImageFile)
 
-      const uploadResponse = await fetch('http://localhost:3001/api/upload', {
+      const uploadResponse = await fetch(getApiUrl('/api/upload'), {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: formDataUpload,
@@ -249,7 +250,7 @@ export default function PerfilProfissionalPage() {
         return
       }
 
-      const response = await fetch('http://localhost:3001/api/professionals/me/portfolio', {
+      const response = await fetch(getApiUrl('/api/professionals/me/portfolio'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -282,7 +283,7 @@ export default function PerfilProfissionalPage() {
   const handleRemovePortfolioItem = async (itemId: string) => {
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await fetch(`http://localhost:3001/api/professionals/me/portfolio/${itemId}`, {
+      const response = await fetch(getApiUrl('/api/professionals/me/portfolio/${itemId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       })
@@ -315,7 +316,7 @@ export default function PerfilProfissionalPage() {
 
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await fetch('http://localhost:3001/api/users/change-password', {
+      const response = await fetch(getApiUrl('/api/users/change-password'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

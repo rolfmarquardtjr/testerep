@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { Button, Input } from '@/components/ui'
 import { LoadingSpinner } from '@/components/shared'
 import {
+import { getApiUrl } from '@/lib/api'
   Search,
   Send,
   ChevronLeft,
@@ -98,7 +99,7 @@ export default function MensagensPage() {
   const fetchConversations = async () => {
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await fetch('http://localhost:3001/api/conversations', {
+      const response = await fetch(getApiUrl('/api/conversations'), {
         headers: { Authorization: `Bearer ${token}` },
       })
 
@@ -117,7 +118,7 @@ export default function MensagensPage() {
     setLoadingMessages(true)
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await fetch(`http://localhost:3001/api/conversations/${conversationId}/messages`, {
+      const response = await fetch(getApiUrl('/api/conversations/${conversationId}/messages`, {
         headers: { Authorization: `Bearer ${token}` },
       })
 
@@ -144,7 +145,7 @@ export default function MensagensPage() {
     setSending(true)
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await fetch(`http://localhost:3001/api/conversations/${selectedConversation.id}/messages`, {
+      const response = await fetch(getApiUrl('/api/conversations/${selectedConversation.id}/messages`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

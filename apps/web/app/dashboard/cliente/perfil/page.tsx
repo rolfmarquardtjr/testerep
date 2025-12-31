@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import { Button, Input, Label } from '@/components/ui'
 import { LoadingSpinner } from '@/components/shared'
 import {
+import { getApiUrl } from '@/lib/api'
   User,
   Mail,
   Phone,
@@ -77,7 +78,7 @@ export default function PerfilPage() {
   const fetchProfile = async () => {
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await fetch('http://localhost:3001/api/users/me', {
+      const response = await fetch(getApiUrl('/api/users/me'), {
         headers: { Authorization: `Bearer ${token}` },
       })
 
@@ -125,7 +126,7 @@ export default function PerfilPage() {
         const formDataUpload = new FormData()
         formDataUpload.append('file', avatarFile)
 
-        const uploadResponse = await fetch('http://localhost:3001/api/upload', {
+        const uploadResponse = await fetch(getApiUrl('/api/upload'), {
           method: 'POST',
           headers: { Authorization: `Bearer ${token}` },
           body: formDataUpload,
@@ -137,7 +138,7 @@ export default function PerfilPage() {
         }
       }
 
-      const response = await fetch('http://localhost:3001/api/users/me', {
+      const response = await fetch(getApiUrl('/api/users/me'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -185,7 +186,7 @@ export default function PerfilPage() {
 
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await fetch('http://localhost:3001/api/users/change-password', {
+      const response = await fetch(getApiUrl('/api/users/change-password'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

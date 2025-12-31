@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { Button, Card, CardContent } from '@/components/ui'
 import { StatusBadge, LoadingSpinner, StarRating } from '@/components/shared'
 import {
+import { getApiUrl } from '@/lib/api'
   ArrowLeft,
   MapPin,
   Calendar,
@@ -134,7 +135,7 @@ export default function PedidoDetalhesPage() {
   const fetchRequest = async () => {
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await fetch(`http://localhost:3001/api/service-requests/${params.id}`, {
+      const response = await fetch(getApiUrl('/api/service-requests/${params.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
 

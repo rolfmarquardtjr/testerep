@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { Button, Card, CardContent, Input } from '@/components/ui'
 import { StatusBadge, EmptyState, LoadingSpinner } from '@/components/shared'
 import {
+import { getApiUrl } from '@/lib/api'
   Search,
   MapPin,
   Calendar,
@@ -73,7 +74,7 @@ export default function TrabalhosPage() {
   const fetchJobs = async () => {
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await fetch('http://localhost:3001/api/service-requests/my-jobs', {
+      const response = await fetch(getApiUrl('/api/service-requests/my-jobs'), {
         headers: { Authorization: `Bearer ${token}` },
       })
 

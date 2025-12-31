@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Button, Card, CardContent, Textarea } from '@/components/ui'
 import { StarRating } from '@/components/shared'
 import { CheckCircle } from 'lucide-react'
+import { getApiUrl } from '@/lib/api'
 
 interface ReviewFormProps {
   professionalId: string
@@ -39,7 +40,7 @@ export default function ReviewForm({
 
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await fetch('http://localhost:3001/api/reviews', {
+      const response = await fetch(getApiUrl('/api/reviews'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

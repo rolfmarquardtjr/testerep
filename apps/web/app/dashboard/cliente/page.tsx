@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { Button } from '@/components/ui'
 import { LoadingSpinner } from '@/components/shared'
 import {
+import { getApiUrl } from '@/lib/api'
   Plus,
   Clock,
   CheckCircle,
@@ -153,7 +154,7 @@ export default function ClienteDashboard() {
   const fetchRequests = async () => {
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await fetch('http://localhost:3001/api/service-requests', {
+      const response = await fetch(getApiUrl('/api/service-requests'), {
         headers: { Authorization: `Bearer ${token}` },
       })
 

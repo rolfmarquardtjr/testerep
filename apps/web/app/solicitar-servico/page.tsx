@@ -6,6 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import {
+import { getApiUrl } from '@/lib/api'
   ArrowLeft,
   Upload,
   MapPin,
@@ -119,7 +120,7 @@ export default function SolicitarServicoPage() {
         const uploadData = new FormData()
         uploadData.append('file', photo)
 
-        const uploadRes = await fetch('http://localhost:3001/api/upload', {
+        const uploadRes = await fetch(getApiUrl('/api/upload'), {
           method: 'POST',
           headers: { Authorization: `Bearer ${token}` },
           body: uploadData,
@@ -135,7 +136,7 @@ export default function SolicitarServicoPage() {
       const city = locationParts[0] || formData.location
       const state = locationParts[1] || 'SP'
 
-      const response = await fetch('http://localhost:3001/api/service-requests', {
+      const response = await fetch(getApiUrl('/api/service-requests'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

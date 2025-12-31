@@ -5,6 +5,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, ArrowLeft, Check } from 'lucide-react'
+import { getApiUrl } from '@/lib/api'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -55,7 +56,7 @@ export default function RegisterPage() {
     }
 
     try {
-      const response = await fetch('http://localhost:3001/api/auth/register', {
+      const response = await fetch(getApiUrl('/api/auth/register'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

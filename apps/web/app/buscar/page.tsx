@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { Button, Card, CardContent, Input } from '@/components/ui'
 import { LoadingSpinner, StarRating } from '@/components/shared'
 import {
+import { getApiUrl } from '@/lib/api'
   Search,
   MapPin,
   Filter,
@@ -69,8 +70,8 @@ export default function BuscarPage() {
   const fetchData = async () => {
     try {
       const [prosRes, catsRes] = await Promise.all([
-        fetch('http://localhost:3001/api/professionals'),
-        fetch('http://localhost:3001/api/categories'),
+        fetch(getApiUrl('/api/professionals'),
+        fetch(getApiUrl('/api/categories'),
       ])
 
       const prosData = await prosRes.json()

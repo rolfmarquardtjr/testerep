@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Sidebar from './Sidebar'
 import MobileNav from './MobileNav'
 import DashboardHeader from './DashboardHeader'
+import { getApiUrl } from '@/lib/api'
 
 interface User {
   id: string
@@ -48,7 +49,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const fetchNotifications = async (token: string) => {
     try {
-      const response = await fetch('http://localhost:3001/api/notifications', {
+      const response = await fetch(getApiUrl('/api/notifications'), {
         headers: { Authorization: `Bearer ${token}` },
       })
       const data = await response.json()

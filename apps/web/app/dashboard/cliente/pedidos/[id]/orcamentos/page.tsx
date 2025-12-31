@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { Button, Card, CardContent } from '@/components/ui'
 import { StatusBadge, LoadingSpinner, StarRating } from '@/components/shared'
 import {
+import { getApiUrl } from '@/lib/api'
   ArrowLeft,
   Check,
   X,
@@ -64,7 +65,7 @@ export default function OrcamentosPage() {
   const fetchQuotes = async () => {
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await fetch(`http://localhost:3001/api/quotes/request/${params.id}`, {
+      const response = await fetch(getApiUrl('/api/quotes/request/${params.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
 
@@ -83,7 +84,7 @@ export default function OrcamentosPage() {
     setAccepting(quoteId)
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await fetch(`http://localhost:3001/api/quotes/${quoteId}/accept`, {
+      const response = await fetch(getApiUrl('/api/quotes/${quoteId}/accept`, {
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}` },
       })

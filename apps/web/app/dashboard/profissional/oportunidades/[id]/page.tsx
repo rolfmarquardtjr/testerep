@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Button, Card, CardContent, Input, Label, Textarea } from '@/components/ui'
 import { LoadingSpinner } from '@/components/shared'
 import {
+import { getApiUrl } from '@/lib/api'
   ArrowLeft,
   MapPin,
   Calendar,
@@ -82,7 +83,7 @@ export default function OportunidadeDetalhesPage() {
   const fetchRequest = async () => {
     try {
       const token = localStorage.getItem('accessToken')
-      const response = await fetch(`http://localhost:3001/api/service-requests/${params.id}`, {
+      const response = await fetch(getApiUrl('/api/service-requests/${params.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
 
@@ -108,7 +109,7 @@ export default function OportunidadeDetalhesPage() {
       const validUntil = new Date()
       validUntil.setDate(validUntil.getDate() + parseInt(quoteData.validDays))
 
-      const response = await fetch('http://localhost:3001/api/quotes', {
+      const response = await fetch(getApiUrl('/api/quotes'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
