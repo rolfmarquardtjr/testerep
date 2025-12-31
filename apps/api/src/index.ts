@@ -83,6 +83,7 @@ app.use((err: any, req: express.Request, res: express.Response, next: express.Ne
 app.listen(PORT, () => {
   console.log(`🚀 Repfy API running on port ${PORT}`)
   console.log(`📚 API Documentation available at http://localhost:${PORT}`)
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`)
 })
 
 export default app
