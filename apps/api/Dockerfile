@@ -1,44 +1,42 @@
-FROM node:18-alpine AS base
+# Build stage
+FROM node:20-alpine AS builder
 
-# Install dependencies only when needed
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Install dependencies
-COPY package*.json ./
-RUN npm ci
+# Copy root files
+COPY .npmrc package*.json ./
 
-# Rebuild the source code only when needed
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+# Copy app files
+COPY apps/api ./apps/api
+COPY apps/types ./apps/types
+COPY packages ./packages
 
-# Generate Prisma Client
-RUN npx prisma generate
+# Install dependencies with npm install (not ci)
+RUN npm install --legacy-peer-deps
 
-# Build application
+# Build the app
+WORKDIR /app/apps/api
 RUN npm run build
 
-# Production image, copy all the files and run
-FROM base AS runner
+# Production stage
+FROM node:20-alpine
+
 WORKDIR /app
 
-ENV NODE_ENV production
+# Copy package files
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/apps/api/package*.json ./apps/api/
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 apiuser
+# Install production dependencies only
+RUN npm install --legacy-peer-deps --omit=dev
 
-COPY --from=builder /app/dist ./dist
+# Copy built app from builder
+COPY --from=builder /app/apps/api/dist ./dist
+COPY --from=builder /app/apps/api/prisma ./prisma
+
+# Copy other necessary files
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/prisma ./prisma
-
-USER apiuser
 
 EXPOSE 3001
 
-ENV PORT 3001
-
-CMD ["node", "dist/index.js"]
+CMD ["npm", "run", "start"]
