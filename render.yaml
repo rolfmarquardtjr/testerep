@@ -3,7 +3,7 @@ services:
     name: repfy-backend
     env: docker
     plan: standard
-    dockerfilePath: ./apps/api/Dockerfile
+    dockerfilePath: ./Dockerfile
     dockerContext: ./
     envVars:
       - key: NODE_ENV
