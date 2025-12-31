@@ -3,14 +3,17 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy root dependency files (from parent directory since Dockerfile is in apps/api)
+# Copy root dependency files
 COPY ../.. .
 
-# Install all dependencies from root (handles monorepo workspaces)
-RUN npm install --legacy-peer-deps --workspaces
+# Install root dependencies
+RUN npm install --legacy-peer-deps
+
+# Install backend dependencies specifically
+WORKDIR /app/apps/api
+RUN npm install --legacy-peer-deps
 
 # Generate Prisma client
-WORKDIR /app/apps/api
 RUN npx prisma generate
 
 # Build backend
