@@ -3,9 +3,8 @@ services:
     name: repfy-backend
     env: docker
     plan: standard
-    rootDir: apps/api
-    dockerfilePath: ./Dockerfile
-    dockerContext: ../..
+    dockerfilePath: ./apps/api/Dockerfile
+    dockerContext: ./
     envVars:
       - key: NODE_ENV
         value: production

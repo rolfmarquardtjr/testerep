@@ -15,10 +15,7 @@ RUN npm install --legacy-peer-deps
 # Move to backend and build
 WORKDIR /app/apps/api
 
-# Debug: List files to verify structure
-RUN ls -la && ls -la prisma/ || echo "Prisma directory not found"
-
-# Generate Prisma client with explicit schema path
+# Generate Prisma client
 RUN npx prisma generate --schema=./prisma/schema.prisma
 
 # Build TypeScript
